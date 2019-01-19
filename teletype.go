@@ -110,6 +110,8 @@ var papertapeAlphabet = map[string]string{
 	"\x7f": "\x00\x00",
 }
 
+var basepath = "c:\\Users\\Timer1\\asciiart\\"
+
 type mode int
 
 var mission = 0
@@ -172,8 +174,8 @@ func doCommand(command string, writechan chan request) mode {
 		writechan <- request{Print, "\n\rType your name>"}
 		result = GetName
 	case 'A':
-		file := strings.TrimSpace(command[1 : len(command)-1])
-		file = strings.ToLower(file) + ".txt"
+		file := strings.TrimSpace(command[1:len(command)])
+		file = basepath + strings.ToLower(file) + ".txt"
 		b, err := ioutil.ReadFile(file)
 		if err != nil {
 			writechan <- request{Print, "\n\rFile not found: " + file + "\n\r>"}
@@ -268,7 +270,7 @@ func main() {
 		}
 		wg.Done()
 	}()
-	writechan <- request{Print, "\r\n\n\n\nSPACE MISSION CONTROL: READY FOR COMMANDS\r\n\n\n>"}
+	writechan <- request{Print, "\r\n\n\n\nSPACE MISSION CONTROL 2.0: READY FOR COMMANDS\r\n\n\n>"}
 	command := ""
 	name := ""
 	for running {
