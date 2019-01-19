@@ -179,8 +179,8 @@ func doCommand(command string, writechan chan request) mode {
 	case "":
 		writechan <- request{Print, "\n\r>"}
 	default:
-		file := strings.TrimSpace(command[1 : len(command)-1])
-		file = strings.ToLower(file) + ".txt"
+		file := basepath + strings.ToLower(strings.TrimSpace(command)) + ".txt"
+		fmt.Printf("Attempting to open: %s\n", file)
 		b, err := ioutil.ReadFile(file)
 		if err == nil {
 			// writechan <- request{Print, "\n\rFile not found: " + file + "\n\r"}
