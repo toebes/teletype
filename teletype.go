@@ -163,30 +163,28 @@ func doCommand(command string, writechan chan request) mode {
 	result := Normal
 	command = strings.TrimSpace(command)
 	fmt.Printf("Command: %s\n", command)
-	switch command[0] {
-	case '?':
+	switch command {
+	case "?":
 		writechan <- request{Print, "\n\rP - Print name on papertape\r\nM - Print a Mission\r\n>"}
-	case 'M':
+	case "M":
 		printMission(writechan)
-	case 'P':
+	case "P":
 		writechan <- request{Print, "\n\rType your name>"}
 		result = GetName
-	case 'A':
+	case "EXIT":
+		writechan <- request{Print, "\n\rExiting\n\r"}
+		result = Exit
+	case "":
+		writechan <- request{Print, "\n\r>"}
+	default:
 		file := strings.TrimSpace(command[1 : len(command)-1])
 		file = strings.ToLower(file) + ".txt"
 		b, err := ioutil.ReadFile(file)
-		if err != nil {
-			writechan <- request{Print, "\n\rFile not found: " + file + "\n\r>"}
-		} else {
+		if err == nil {
+			// writechan <- request{Print, "\n\rFile not found: " + file + "\n\r"}
 			out := string(b)
 			writechan <- request{Print, "\n\r\n\n\n" + out + "\n\r\n\n\n\n"}
 		}
-	case 'E':
-		if command == "EXIT" {
-			writechan <- request{Print, "\n\rExiting\n\r"}
-			result = Exit
-		}
-	default:
 		writechan <- request{Print, "\n\r>"}
 	}
 	return result
