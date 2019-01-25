@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
 
@@ -173,6 +174,14 @@ func doCommand(command string, writechan chan request) mode {
 	case "P":
 		writechan <- request{Print, "\n\rType your name>"}
 		result = GetName
+	case "SHUTDOWN":
+		writechan <- request{Print, "\n\rShutting down.  Wait 20 seconds before powering off."}
+		c := exec.Command("cmd", "/C", "shutdown", "/s", "/t", "1")
+		if err := c.Run(); err != nil {
+			writechan <- request{Print, "\n\rError: " + err.Error()}
+		} else {
+			result = Exit
+		}
 	case "EXIT":
 		writechan <- request{Print, "\n\rExiting\n\r"}
 		result = Exit
